@@ -82,12 +82,11 @@ func scopeInScopes(scopes []string, scope string) bool {
 func resourceSendgridAPIKeyCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var scopes []string
 
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
 	name := d.Get("name").(string)
 	onBehalfOf := d.Get("sub_user_on_behalf_of").(string)
-	if len(onBehalfOf) > 0 {
-		c.OnBehalfOf = onBehalfOf
-	}
+
+	c := config.NewClient(onBehalfOf)
 
 	for _, scope := range d.Get("scopes").(*schema.Set).List() {
 		scopes = append(scopes, scope.(string))
@@ -115,12 +114,10 @@ func resourceSendgridAPIKeyCreate(ctx context.Context, d *schema.ResourceData, m
 }
 
 func resourceSendgridAPIKeyRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
-
+	config := m.(*Config)
 	onBehalfOf := d.Get("sub_user_on_behalf_of").(string)
-	if len(onBehalfOf) > 0 {
-		c.OnBehalfOf = onBehalfOf
-	}
+
+	c := config.NewClient(onBehalfOf)
 
 	apiKey, err := c.ReadAPIKey(ctx, d.Id())
 	if err.Err != nil {
@@ -144,12 +141,10 @@ func hasDiff(o, n interface{}) bool {
 }
 
 func resourceSendgridAPIKeyUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
-
+	config := m.(*Config)
 	onBehalfOf := d.Get("sub_user_on_behalf_of").(string)
-	if len(onBehalfOf) > 0 {
-		c.OnBehalfOf = onBehalfOf
-	}
+
+	c := config.NewClient(onBehalfOf)
 
 	a := sendgrid.APIKey{
 		ID:   d.Id(),
@@ -180,12 +175,10 @@ func resourceSendgridAPIKeyUpdate(ctx context.Context, d *schema.ResourceData, m
 }
 
 func resourceSendgridAPIKeyDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
-
+	config := m.(*Config)
 	onBehalfOf := d.Get("sub_user_on_behalf_of").(string)
-	if len(onBehalfOf) > 0 {
-		c.OnBehalfOf = onBehalfOf
-	}
+
+	c := config.NewClient(onBehalfOf)
 
 	_, err := sendgrid.RetryOnRateLimit(ctx, d, func() (interface{}, sendgrid.RequestError) {
 		return c.DeleteAPIKey(ctx, d.Id())

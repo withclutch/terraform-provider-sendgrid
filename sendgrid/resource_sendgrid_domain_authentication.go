@@ -133,7 +133,8 @@ func resourceSendgridDomainAuthenticationCreate(
 	d *schema.ResourceData,
 	m interface{},
 ) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	domain := d.Get("domain").(string)
 	subdomain := d.Get("subdomain").(string)
@@ -177,7 +178,8 @@ func resourceSendgridDomainAuthenticationRead( //nolint:funlen,cyclop
 	d *schema.ResourceData,
 	m interface{},
 ) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	auth, err := c.ReadDomainAuthentication(ctx, d.Id())
 	if err.Err != nil {
@@ -275,7 +277,8 @@ func resourceSendgridDomainAuthenticationUpdate(
 	d *schema.ResourceData,
 	m interface{},
 ) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	isDefault := d.Get("is_default").(bool)
 	customSPF := d.Get("custom_spf").(bool)
@@ -305,7 +308,8 @@ func resourceSendgridDomainAuthenticationDelete(
 	d *schema.ResourceData,
 	m interface{},
 ) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	_, err := sendgrid.RetryOnRateLimit(ctx, d, func() (interface{}, sendgrid.RequestError) {
 		return c.DeleteDomainAuthentication(ctx, d.Id())

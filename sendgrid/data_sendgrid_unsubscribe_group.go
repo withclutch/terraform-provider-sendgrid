@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	sendgrid "github.com/arslanbekov/terraform-provider-sendgrid/sdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -41,7 +40,8 @@ func dataSendgridUnsubscribeGroup() *schema.Resource {
 func dataSendgridUnsubscribeGroupRead(context context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	groupID := d.Get("group_id").(string)
 	name := d.Get("name").(string)
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	switch {
 	case groupID != "":

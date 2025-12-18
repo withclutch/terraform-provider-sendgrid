@@ -46,7 +46,8 @@ func dataSendgridTemplate() *schema.Resource {
 func dataSendgridTemplateRead(context context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	templateID := d.Get("template_id").(string)
 	name := d.Get("name").(string)
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	switch {
 	case templateID != "":

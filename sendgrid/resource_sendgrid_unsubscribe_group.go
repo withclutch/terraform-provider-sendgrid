@@ -70,7 +70,8 @@ func resourceSendgridUnsubscribeGroupCreate(
 	d *schema.ResourceData,
 	m interface{},
 ) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	name := d.Get("name").(string)
 	description := d.Get("description").(string)
@@ -92,7 +93,8 @@ func resourceSendgridUnsubscribeGroupCreate(
 }
 
 func resourceSendgridUnsubscribeGroupRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	group, err := c.ReadUnsubscribeGroup(ctx, d.Id())
 	if err.Err != nil {
@@ -131,7 +133,8 @@ func resourceSendgridUnsubscribeGroupUpdate(
 	d *schema.ResourceData,
 	m interface{},
 ) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	name := d.Get("name").(string)
 	description := d.Get("description").(string)
@@ -152,7 +155,8 @@ func resourceSendgridUnsubscribeGroupDelete(
 	d *schema.ResourceData,
 	m interface{},
 ) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	_, err := sendgrid.RetryOnRateLimit(ctx, d, func() (interface{}, sendgrid.RequestError) {
 		return c.DeleteUnsubscribeGroup(ctx, d.Id())

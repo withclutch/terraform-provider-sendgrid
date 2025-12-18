@@ -88,7 +88,8 @@ func resourceSendgridSubuser() *schema.Resource {
 }
 
 func resourceSendgridSubuserCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	username := d.Get("username").(string)
 	password := d.Get("password").(string)
@@ -118,7 +119,8 @@ func resourceSendgridSubuserCreate(ctx context.Context, d *schema.ResourceData, 
 }
 
 func resourceSendgridSubuserRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	// hack to clear any on behalf of set in create sub user
 	// to fix this properly I think we need to pass this down rather than setting global state
@@ -144,7 +146,8 @@ func resourceSendgridSubuserRead(ctx context.Context, d *schema.ResourceData, m 
 }
 
 func resourceSendgridSubuserUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	if d.HasChange("disabled") {
 		if _, requestErr := c.UpdateSubuser(ctx, d.Id(), d.Get("disabled").(bool)); requestErr.Err != nil {
@@ -182,7 +185,8 @@ func resourceSendgridSubuserUpdate(ctx context.Context, d *schema.ResourceData, 
 }
 
 func resourceSendgridSubuserDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	_, err := sendgrid.RetryOnRateLimit(ctx, d, func() (interface{}, sendgrid.RequestError) {
 		return c.DeleteSubuser(ctx, d.Id())

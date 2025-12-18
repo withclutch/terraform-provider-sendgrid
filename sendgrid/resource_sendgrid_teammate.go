@@ -488,7 +488,8 @@ Original error: %w`, err)
 }
 
 func resourceSendgridTeammateCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	client := meta.(*sendgrid.Client)
+	config := meta.(*Config)
+	client := config.NewClient("")
 	email := d.Get("email").(string)
 	isAdmin := d.Get("is_admin").(bool)
 	isSSO := d.Get("is_sso").(bool)
@@ -541,7 +542,8 @@ func resourceSendgridTeammateCreate(ctx context.Context, d *schema.ResourceData,
 }
 
 func resourceSendgridTeammateRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	client := meta.(*sendgrid.Client)
+	config := meta.(*Config)
+	client := config.NewClient("")
 
 	var diags diag.Diagnostics
 	email := d.Id()
@@ -595,7 +597,8 @@ func resourceSendgridTeammateRead(ctx context.Context, d *schema.ResourceData, m
 }
 
 func resourceSendgridTeammateUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	client := meta.(*sendgrid.Client)
+	config := meta.(*Config)
+	client := config.NewClient("")
 	email := d.Get("email").(string)
 	isAdmin := d.Get("is_admin").(bool)
 	isSSO := d.Get("is_sso").(bool)
@@ -648,7 +651,8 @@ func resourceSendgridTeammateUpdate(ctx context.Context, d *schema.ResourceData,
 }
 
 func resourceSendgridTeammateDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	client := meta.(*sendgrid.Client)
+	config := meta.(*Config)
+	client := config.NewClient("")
 
 	var diags diag.Diagnostics
 	userEmail := d.Id()

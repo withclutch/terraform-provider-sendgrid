@@ -175,7 +175,8 @@ func resourceSendgridEventWebhookDelete(ctx context.Context, d *schema.ResourceD
 }
 
 func resourceSendgridEventWebhookPatch(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	enabled := d.Get("enabled").(bool)
 	url := d.Get("url").(string)
@@ -237,7 +238,8 @@ func resourceSendgridEventWebhookPatch(ctx context.Context, d *schema.ResourceDa
 }
 
 func resourceSendgridEventWebhookRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	webhook, err := c.ReadEventWebhook(ctx)
 	if err.Err != nil {

@@ -1,6 +1,5 @@
 package sendgrid
 
-
 import (
 	"context"
 
@@ -87,7 +86,8 @@ func resourceSendgridWebhookSecurityPolicy() *schema.Resource {
 }
 
 func resourceSendgridWebhookSecurityPolicyCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	name := d.Get("name").(string)
 
@@ -123,7 +123,8 @@ func resourceSendgridWebhookSecurityPolicyCreate(ctx context.Context, d *schema.
 }
 
 func resourceSendgridWebhookSecurityPolicyRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	webhook, err := c.ReadWebhookSecurityPolicy(ctx, d.Id())
 	if err.Err != nil {
@@ -186,7 +187,8 @@ func resourceSendgridWebhookSecurityPolicyRead(ctx context.Context, d *schema.Re
 }
 
 func resourceSendgridWebhookSecurityPolicyUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	name := d.Get("name").(string)
 
@@ -217,7 +219,8 @@ func resourceSendgridWebhookSecurityPolicyUpdate(ctx context.Context, d *schema.
 }
 
 func resourceSendgridWebhookSecurityPolicyDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	_, err := sendgrid.RetryOnRateLimit(ctx, d, func() (interface{}, sendgrid.RequestError) {
 		return c.DeleteWebhookSecurityPolicy(ctx, d.Id())

@@ -87,7 +87,8 @@ func resourceSendgridParseWebhook() *schema.Resource {
 }
 
 func resourceSendgridParseWebhookCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	hostname := d.Get("hostname").(string)
 	url := d.Get("url").(string)
@@ -111,7 +112,8 @@ func resourceSendgridParseWebhookCreate(ctx context.Context, d *schema.ResourceD
 }
 
 func resourceSendgridParseWebhookRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	webhook, err := c.ReadParseWebhook(ctx, d.Id())
 	if err.Err != nil {
@@ -133,7 +135,8 @@ func resourceSendgridParseWebhookRead(ctx context.Context, d *schema.ResourceDat
 }
 
 func resourceSendgridParseWebhookUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	spamCheck := d.Get("spam_check").(bool)
 	sendRaw := d.Get("send_raw").(bool)
@@ -150,7 +153,8 @@ func resourceSendgridParseWebhookUpdate(ctx context.Context, d *schema.ResourceD
 }
 
 func resourceSendgridParseWebhookDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	if securityPolicyId := d.Get("webhook_security_policy_id").(string); securityPolicyId != "" {
 		spamCheck := d.Get("spam_check").(bool)

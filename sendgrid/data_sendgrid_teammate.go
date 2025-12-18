@@ -58,7 +58,8 @@ func dataSendgridTeammate() *schema.Resource {
 }
 
 func dataSendgridTeammateRead(context context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	client := m.(*sendgrid.Client)
+	config := m.(*Config)
+	client := config.NewClient("")
 	email := d.Get("email").(string)
 	tflog.Debug(context, "Reading user", map[string]interface{}{"email": email})
 

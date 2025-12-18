@@ -29,7 +29,8 @@ func dataSendgridTemplateVersion() *schema.Resource {
 
 func dataSendgridTemplateVersionRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	templateID := d.Get("template_id").(string)
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	templateStruct, err := sendgrid.RetryOnRateLimit(ctx, d, func() (interface{}, sendgrid.RequestError) {
 		return c.ReadTemplate(ctx, templateID)

@@ -60,7 +60,8 @@ func resourceSendgridTemplate() *schema.Resource {
 }
 
 func resourceSendgridTemplateCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	name := d.Get("name").(string)
 	generation := d.Get("generation").(string)
@@ -81,7 +82,8 @@ func resourceSendgridTemplateCreate(ctx context.Context, d *schema.ResourceData,
 }
 
 func resourceSendgridTemplateRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	templateStruct, err := sendgrid.RetryOnRateLimit(ctx, d, func() (interface{}, sendgrid.RequestError) {
 		return c.ReadTemplate(ctx, d.Id())
@@ -115,7 +117,8 @@ func sendgridTemplateParse(template *sendgrid.Template, d *schema.ResourceData) 
 }
 
 func resourceSendgridTemplateUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	if d.HasChange("name") {
 		_, err := sendgrid.RetryOnRateLimit(ctx, d, func() (interface{}, sendgrid.RequestError) {
@@ -130,7 +133,8 @@ func resourceSendgridTemplateUpdate(ctx context.Context, d *schema.ResourceData,
 }
 
 func resourceSendgridTemplateDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	_, err := sendgrid.RetryOnRateLimit(ctx, d, func() (interface{}, sendgrid.RequestError) {
 		return c.DeleteTemplate(ctx, d.Id())

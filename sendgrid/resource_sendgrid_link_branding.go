@@ -101,7 +101,8 @@ func resourceSendgridLinkBranding() *schema.Resource { //nolint:funlen
 }
 
 func resourceSendgridLinkBrandingCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	domain := d.Get("domain").(string)
 	subdomain := d.Get("subdomain").(string)
@@ -123,7 +124,8 @@ func resourceSendgridLinkBrandingCreate(ctx context.Context, d *schema.ResourceD
 }
 
 func resourceSendgridLinkBrandingRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	link, err := c.ReadLinkBranding(ctx, d.Id())
 	if err.Err != nil {
@@ -168,7 +170,8 @@ func resourceSendgridLinkBrandingRead(ctx context.Context, d *schema.ResourceDat
 }
 
 func resourceSendgridLinkBrandingUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	isDefault := d.Get("is_default").(bool)
 
@@ -193,7 +196,8 @@ func resourceSendgridLinkBrandingUpdate(ctx context.Context, d *schema.ResourceD
 }
 
 func resourceSendgridLinkBrandingDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	_, err := sendgrid.RetryOnRateLimit(ctx, d, func() (interface{}, sendgrid.RequestError) {
 		return c.DeleteLinkBranding(ctx, d.Id())

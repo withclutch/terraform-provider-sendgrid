@@ -51,6 +51,23 @@ const (
 	unsubscribeGroupLength = 30
 )
 
+// Config holds the provider configuration.
+type Config struct {
+	APIKey  string
+	Host    string
+	Subuser string
+}
+
+// NewClient creates a new SendGrid client from the config.
+// This should be called for each operation to avoid shared state issues.
+func (c *Config) NewClient(onBehalfOf string) *sendgrid.Client {
+	subuser := c.Subuser
+	if onBehalfOf != "" {
+		subuser = onBehalfOf
+	}
+	return sendgrid.NewClient(c.APIKey, c.Host, subuser)
+}
+
 // Provider terraform.ResourceProvider.
 func Provider() *schema.Provider {
 	return &schema.Provider{
@@ -119,5 +136,11 @@ func providerConfigure(_ context.Context, d *schema.ResourceData) (interface{}, 
 	host := d.Get("host").(string)
 	subuser := d.Get("subuser").(string)
 
-	return sendgrid.NewClient(apiKey, host, subuser), diags
+	config := &Config{
+		APIKey:  apiKey,
+		Host:    host,
+		Subuser: subuser,
+	}
+
+	return config, diags
 }

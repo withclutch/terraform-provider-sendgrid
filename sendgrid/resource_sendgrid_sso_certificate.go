@@ -64,7 +64,8 @@ func resourceSendgridSSOCertificate() *schema.Resource {
 }
 
 func resourceSendgridSSOCertificateCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	publicCertificate := d.Get("public_certificate").(string)
 	integrationID := d.Get("integration_id").(string)
@@ -84,7 +85,8 @@ func resourceSendgridSSOCertificateCreate(ctx context.Context, d *schema.Resourc
 }
 
 func resourceSendgridSSOCertificateRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	certificate, requestErr := c.ReadSSOCertificate(ctx, d.Id())
 
@@ -101,7 +103,8 @@ func resourceSendgridSSOCertificateRead(ctx context.Context, d *schema.ResourceD
 }
 
 func resourceSendgridSSOCertificateUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	id := d.Id()
 	publicCertificate := d.Get("public_certificate").(string)
@@ -118,7 +121,8 @@ func resourceSendgridSSOCertificateUpdate(ctx context.Context, d *schema.Resourc
 }
 
 func resourceSendgridSSOCertificateDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	_, err := sendgrid.RetryOnRateLimit(ctx, d, func() (interface{}, sendgrid.RequestError) {
 		return c.DeleteSSOCertificate(ctx, fmt.Sprint(d.Id()))

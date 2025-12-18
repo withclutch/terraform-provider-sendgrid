@@ -94,7 +94,8 @@ func resourceSendgridSSOIntegration() *schema.Resource {
 }
 
 func resourceSendgridSSOIntegrationCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	name := d.Get("name").(string)
 	enabled := d.Get("enabled").(bool)
@@ -117,7 +118,8 @@ func resourceSendgridSSOIntegrationCreate(ctx context.Context, d *schema.Resourc
 }
 
 func resourceSendgridSSOIntegrationRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	integration, requestErr := c.ReadSSOIntegration(ctx, d.Id())
 
@@ -146,7 +148,8 @@ func resourceSendgridSSOIntegrationRead(ctx context.Context, d *schema.ResourceD
 }
 
 func resourceSendgridSSOIntegrationUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	id := d.Id()
 	name := d.Get("name").(string)
@@ -166,7 +169,8 @@ func resourceSendgridSSOIntegrationUpdate(ctx context.Context, d *schema.Resourc
 }
 
 func resourceSendgridSSOIntegrationDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*sendgrid.Client)
+	config := m.(*Config)
+	c := config.NewClient("")
 
 	_, err := sendgrid.RetryOnRateLimit(ctx, d, func() (interface{}, sendgrid.RequestError) {
 		return c.DeleteSSOIntegration(ctx, d.Id())
