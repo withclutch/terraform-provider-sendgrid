@@ -82,6 +82,8 @@ var (
 
 	ErrDomainAuthenticationIDRequired = errors.New("id for domain authentication is required")
 
+	ErrDomainAuthenticationValidationFailed = errors.New("domain authentication validation failed")
+
 	ErrFailedDeletingDomainAuthentication = errors.New("failed deleting domain authentication")
 
 	ErrLinkBrandingIDRequired = errors.New("link branding id is required")

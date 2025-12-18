@@ -152,3 +152,44 @@ func testAccCheckSendgridDomainAuthenticationExists(n string) resource.TestCheck
 		return nil
 	}
 }
+
+func TestAccCheckSendgridDomainAuthenticationOnBehalfOf(t *testing.T) {
+	domain := "test-" + acctest.RandString(10) + ".example.com"
+  username := "terraform-subuser-" + acctest.RandString(10)
+	email := username + "@example.com"
+	password := "TerraformTest123!"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckSendgridDomainAuthenticationDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckSendgridDomainAuthenticationConfigOnBehalfOf(username, email, password, domain),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckSendgridDomainAuthenticationExists("sendgrid_domain_authentication.test"),
+					resource.TestCheckResourceAttr("sendgrid_domain_authentication.test", "domain", domain),
+					resource.TestCheckResourceAttr("sendgrid_domain_authentication.test", "default", "false"),
+					resource.TestCheckResourceAttr("sendgrid_domain_authentication.test", "automatic_security", "false"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckSendgridDomainAuthenticationConfigOnBehalfOf(username, email, password, domain string) string {
+	return fmt.Sprintf(`
+resource "sendgrid_subuser" "sub" {
+  username = "%s"
+  email    = "%s"
+  password = "%s"
+}
+
+resource "sendgrid_domain_authentication" "onbehalf" {
+	domain                = "%s"
+	sub_user_on_behalf_of = sendgrid_subuser.sub.username
+	default               = false
+	automatic_security    = false
+}
+`, username, email, password, domain)
+}
