@@ -139,6 +139,18 @@ Contributions are welcome! We'd love your help improving this provider.
 
 For significant changes, please open an issue first to discuss the proposed changes.
 
+## Commercial Support & Professional Services
+
+Need help with integrating this provider or other Terraform/OpenTofu solutions? I offer professional services including:
+
+- **Provider Integration** - Custom implementation and configuration
+- **Migration Assistance** - Smooth migration from manual setup to Infrastructure as Code
+- **Terraform/OpenTofu Consulting** - Architecture design and best practices
+- **Custom Provider Development** - Terraform providers for your specific needs
+- **Training & Workshops** - Team training on Terraform/OpenTofu
+
+For inquiries and collaboration opportunities, please contact: **[sendgrid@arslanbekov.com](mailto:sendgrid@arslanbekov.com)**
+
 ## License
 
 This project is licensed under the [Mozilla Public License 2.0](LICENSE).
