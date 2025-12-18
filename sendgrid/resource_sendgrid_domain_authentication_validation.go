@@ -36,6 +36,7 @@ func resourceSendgridDomainAuthenticationValidation() *schema.Resource { //nolin
 				Type:        schema.TypeString,
 				Description: "Id of the domain authentication to validate.",
 				Required:    true,
+				ForceNew:    true,
 			},
 
 			"valid": {
@@ -82,6 +83,10 @@ func resourceSendgridDomainAuthenticationValidationRead( //nolint:funlen,cyclop
 
 	//nolint:errcheck
 	d.Set("valid", auth.Valid)
+	if err := d.Set("valid", auth.Valid); err != nil {
+		return diag.FromErr(err)
+	}
+
 	d.SetId(fmt.Sprint(auth.ID))
 	return nil
 }

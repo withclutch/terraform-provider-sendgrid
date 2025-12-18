@@ -162,7 +162,7 @@ func (c *Client) ValidateDomainAuthentication(ctx context.Context, id string) Re
 		}
 	}
 
-	res, err := unmarshall(respBody)
+	res, err := unmarshal(respBody)
 	if err != nil {
 		return RequestError{
 			StatusCode: http.StatusInternalServerError,
@@ -180,7 +180,7 @@ func (c *Client) ValidateDomainAuthentication(ctx context.Context, id string) Re
 	return RequestError{StatusCode: http.StatusOK, Err: nil}
 }
 
-func unmarshall(respBody string) (map[string]interface{}, error) {
+func unmarshal(respBody string) (map[string]interface{}, error) {
 	var j map[string]interface{}
 	if err := json.Unmarshal([]byte(respBody), &j); err != nil {
 		log.Printf("JSON Unmarshalling of the response body: %s, failed with: %s,",
