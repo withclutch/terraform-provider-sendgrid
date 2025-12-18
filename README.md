@@ -5,8 +5,11 @@
 [![codecov](https://codecov.io/gh/arslanbekov/terraform-provider-sendgrid/branch/master/graph/badge.svg)](https://codecov.io/gh/arslanbekov/terraform-provider-sendgrid)
 [![Go Version](https://img.shields.io/github/go-mod/go-version/arslanbekov/terraform-provider-sendgrid)](https://github.com/arslanbekov/terraform-provider-sendgrid/blob/master/go.mod)
 [![License](https://img.shields.io/badge/License-MPL%202.0-blue.svg)](https://opensource.org/licenses/MPL-2.0)
+[![OpenTofu Compatible](https://img.shields.io/badge/OpenTofu-Compatible-orange?logo=opentofu)](https://opentofu.org/)
 
 A comprehensive Terraform provider for managing SendGrid resources with enhanced features and reliability.
+
+> **✨ Fully compatible with [OpenTofu](https://opentofu.org/)** - This provider works seamlessly with both Terraform and OpenTofu, with full GPG signature verification support.
 
 ## Key Features
 
@@ -46,7 +49,11 @@ resource "sendgrid_teammate" "example" {
 ```
 
 ```bash
+# Using Terraform
 terraform init && terraform apply
+
+# Or using OpenTofu
+tofu init && tofu apply
 ```
 
 ## Documentation
@@ -85,6 +92,7 @@ See [full documentation](docs/RESOURCES.md) for details.
 ## Quick Links
 
 - [Terraform Registry](https://registry.terraform.io/providers/arslanbekov/sendgrid)
+- [OpenTofu Registry](https://search.opentofu.org/provider/arslanbekov/sendgrid/latest)
 - [Report Issues](https://github.com/arslanbekov/terraform-provider-sendgrid/issues)
 - [Discussions](https://github.com/arslanbekov/terraform-provider-sendgrid/discussions)
 - [SendGrid API Documentation](https://www.twilio.com/docs/sendgrid/api-reference)
