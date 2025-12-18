@@ -9,7 +9,7 @@
 
 A comprehensive Terraform provider for managing SendGrid resources with enhanced features and reliability.
 
-> **✨ Fully compatible with [OpenTofu](https://opentofu.org/)** - This provider works seamlessly with both Terraform and OpenTofu, with full GPG signature verification support.
+> **Fully compatible with [OpenTofu](https://opentofu.org/)** - This provider works seamlessly with both Terraform and OpenTofu.
 
 ## Key Features
 
