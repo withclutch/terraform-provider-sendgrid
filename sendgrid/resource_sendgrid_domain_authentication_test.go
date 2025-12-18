@@ -155,7 +155,7 @@ func testAccCheckSendgridDomainAuthenticationExists(n string) resource.TestCheck
 
 func TestAccCheckSendgridDomainAuthenticationOnBehalfOf(t *testing.T) {
 	domain := "test-" + acctest.RandString(10) + ".example.com"
-  username := "terraform-subuser-" + acctest.RandString(10)
+	username := "terraform-subuser-" + acctest.RandString(10)
 	email := username + "@example.com"
 	password := "TerraformTest123!"
 

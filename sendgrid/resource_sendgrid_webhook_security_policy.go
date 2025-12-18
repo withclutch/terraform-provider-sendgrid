@@ -1,6 +1,5 @@
 package sendgrid
 
-
 import (
 	"context"
 

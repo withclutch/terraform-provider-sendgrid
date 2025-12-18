@@ -123,4 +123,3 @@ func TestSuppressDiffForPendingUsers(t *testing.T) {
 		})
 	}
 }
-
