@@ -65,6 +65,8 @@ func validateDomain(ctx context.Context, d *schema.ResourceData, m interface{}) 
 		return diag.Errorf("unable to validate domain DNS configuration")
 	}
 
+	d.SetId(d.Get("domain_authentication_id").(string))
+
 	return resourceSendgridDomainAuthenticationValidationRead(ctx, d, m)
 }
 
