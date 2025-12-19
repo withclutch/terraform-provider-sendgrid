@@ -81,8 +81,6 @@ func resourceSendgridDomainAuthenticationValidationRead( //nolint:funlen,cyclop
 		return diag.FromErr(err.Err)
 	}
 
-	//nolint:errcheck
-	d.Set("valid", auth.Valid)
 	if err := d.Set("valid", auth.Valid); err != nil {
 		return diag.FromErr(err)
 	}
