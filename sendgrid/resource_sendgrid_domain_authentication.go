@@ -124,6 +124,11 @@ func resourceSendgridDomainAuthentication() *schema.Resource { //nolint:funlen
 					},
 				},
 			},
+			"sub_user_on_behalf_of": {
+				Type:        schema.TypeString,
+				Description: "The subuser's username. The API call is made on behalf of the subuser account.",
+				Optional:    true,
+			},
 		},
 	}
 }
@@ -144,6 +149,11 @@ func resourceSendgridDomainAuthenticationCreate(
 	customDKIMSelector := d.Get("custom_dkim_selector").(string)
 	ipsSet := d.Get("ips").(*schema.Set).List()
 	ips := make([]string, 0)
+
+	onBehalfOf := d.Get("sub_user_on_behalf_of").(string)
+	if len(onBehalfOf) > 0 {
+		c.OnBehalfOf = onBehalfOf
+	}
 
 	for _, ip := range ipsSet {
 		ips = append(ips, ip.(string))
@@ -204,6 +214,11 @@ func resourceSendgridDomainAuthenticationRead( //nolint:funlen,cyclop
 	ips := make([]interface{}, len(auth.IPs))
 	for idx, ip := range auth.IPs {
 		ips[idx] = ip
+	}
+
+	onBehalfOf := d.Get("sub_user_on_behalf_of").(string)
+	if len(onBehalfOf) > 0 {
+		c.OnBehalfOf = onBehalfOf
 	}
 
 	if er := d.Set("ips", schema.NewSet(d.Get("ips").(*schema.Set).F, ips)); er != nil {
@@ -283,6 +298,11 @@ func resourceSendgridDomainAuthenticationUpdate(
 	isDefault := d.Get("is_default").(bool)
 	customSPF := d.Get("custom_spf").(bool)
 
+	onBehalfOf := d.Get("sub_user_on_behalf_of").(string)
+	if len(onBehalfOf) > 0 {
+		c.OnBehalfOf = onBehalfOf
+	}
+
 	auth, err := sendgrid.RetryOnRateLimit(ctx, d, func() (interface{}, sendgrid.RequestError) {
 		return c.UpdateDomainAuthentication(ctx, d.Id(), isDefault, customSPF)
 	})
@@ -311,6 +331,10 @@ func resourceSendgridDomainAuthenticationDelete(
 	config := m.(*Config)
 	c := config.NewClient("")
 
+	onBehalfOf := d.Get("sub_user_on_behalf_of").(string)
+	if len(onBehalfOf) > 0 {
+		c.OnBehalfOf = onBehalfOf
+	}
 	_, err := sendgrid.RetryOnRateLimit(ctx, d, func() (interface{}, sendgrid.RequestError) {
 		return c.DeleteDomainAuthentication(ctx, d.Id())
 	})
