@@ -25,7 +25,6 @@ func resourceSendgridDomainAuthenticationValidation() *schema.Resource { //nolin
 	return &schema.Resource{
 		CreateContext: resourceSendgridDomainAuthenticationValidationCreate,
 		ReadContext:   resourceSendgridDomainAuthenticationValidationRead,
-		UpdateContext: resourceSendgridDomainAuthenticationValidationUpdate,
 		DeleteContext: resourceSendgridDomainAuthenticationValidationDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
@@ -87,14 +86,6 @@ func resourceSendgridDomainAuthenticationValidationRead( //nolint:funlen,cyclop
 
 	d.SetId(fmt.Sprint(auth.ID))
 	return nil
-}
-
-func resourceSendgridDomainAuthenticationValidationUpdate(
-	ctx context.Context,
-	d *schema.ResourceData,
-	m interface{},
-) diag.Diagnostics {
-	return validateDomain(ctx, d, m)
 }
 
 func resourceSendgridDomainAuthenticationValidationDelete(context.Context, *schema.ResourceData, interface{}) diag.Diagnostics {
