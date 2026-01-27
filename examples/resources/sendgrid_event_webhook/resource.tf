@@ -23,3 +23,27 @@ resource "sendgrid_event_webhook" "basic" {
   group_resubscribe = true
   group_unsubscribe = true
 }
+
+# Multiple webhooks example
+resource "sendgrid_event_webhook" "dev" {
+  enabled       = true
+  url           = "https://dev.myapp.com/sendgrid/events"
+  friendly_name = "Development Webhook"
+
+  delivered = true
+  bounce    = true
+  dropped   = true
+}
+
+resource "sendgrid_event_webhook" "prod" {
+  enabled       = true
+  url           = "https://prod.myapp.com/sendgrid/events"
+  friendly_name = "Production Webhook"
+
+  delivered   = true
+  bounce      = true
+  dropped     = true
+  spam_report = true
+  open        = true
+  click       = true
+}
