@@ -263,7 +263,7 @@ func resourceSendgridEventWebhookRead(ctx context.Context, d *schema.ResourceDat
 	//nolint:errcheck
 	d.Set("bounce", webhook.Bounce)
 	//nolint:errcheck
-	d.Set("deferred", webhook.Delivered)
+	d.Set("deferred", webhook.Deferred)
 	//nolint:errcheck
 	d.Set("unsubscribe", webhook.Unsubscribe)
 	//nolint:errcheck
