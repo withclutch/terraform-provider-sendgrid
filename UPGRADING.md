@@ -2,11 +2,11 @@
 
 This document describes breaking changes and how to upgrade between major versions of the SendGrid Terraform Provider.
 
-## Upgrading to v2.0.0
+## Upgrading to v2.1.0
 
 ### Event Webhook Breaking Changes
 
-Version 2.0.0 introduces multi-webhook support for the `sendgrid_event_webhook` resource. This is a breaking change that affects existing state.
+Version 2.1.0 introduces multi-webhook support for the `sendgrid_event_webhook` resource. This is a breaking change that affects existing state.
 
 #### What Changed
 
@@ -68,7 +68,7 @@ resource "sendgrid_event_webhook" "example" {
 }
 ```
 
-#### New Features in v2.0.0
+#### New Features in v2.1.0
 
 - **Multiple webhooks**: Create separate webhooks for different environments or use cases
 - **Import support**: Import existing webhooks with `terraform import`
