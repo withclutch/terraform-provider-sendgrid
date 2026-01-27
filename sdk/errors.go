@@ -78,6 +78,18 @@ var (
 
 	ErrFailedPatchingEventWebhook = errors.New("failed to patch event webhook")
 
+	// ErrEventWebhookIDRequired error displayed when an event webhook ID wasn't specified.
+	ErrEventWebhookIDRequired = errors.New("an event webhook ID is required")
+
+	// ErrFailedCreatingEventWebhook error displayed when the provider can not create an event webhook.
+	ErrFailedCreatingEventWebhook = errors.New("failed to create event webhook")
+
+	// ErrFailedUpdatingEventWebhook error displayed when the provider can not update an event webhook.
+	ErrFailedUpdatingEventWebhook = errors.New("failed to update event webhook")
+
+	// ErrFailedDeletingEventWebhook error displayed when the provider can not delete an event webhook.
+	ErrFailedDeletingEventWebhook = errors.New("failed to delete event webhook")
+
 	ErrFailedCreatingDomainAuthentication = errors.New("failed to create domain authentication")
 
 	ErrDomainAuthenticationIDRequired = errors.New("id for domain authentication is required")

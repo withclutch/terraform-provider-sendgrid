@@ -25,7 +25,15 @@ func TestAccSendgridEventWebhookBasic(t *testing.T) {
 					testAccCheckSendgridEventWebhookExists("sendgrid_event_webhook.test"),
 					resource.TestCheckResourceAttr("sendgrid_event_webhook.test", "url", url),
 					resource.TestCheckResourceAttr("sendgrid_event_webhook.test", "enabled", "true"),
+					resource.TestCheckResourceAttrSet("sendgrid_event_webhook.test", "id"),
 				),
+			},
+			// Import test
+			{
+				ResourceName:            "sendgrid_event_webhook.test",
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"oauth_client_secret"},
 			},
 		},
 	})
@@ -150,6 +158,34 @@ func TestAccSendgridEventWebhookFriendlyNameUpdate(t *testing.T) {
 	})
 }
 
+func TestAccSendgridEventWebhookMultiple(t *testing.T) {
+	urlDev := "https://dev-" + acctest.RandString(10) + ".com/webhook"
+	urlProd := "https://prod-" + acctest.RandString(10) + ".com/webhook"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckSendgridEventWebhookDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckSendgridEventWebhookConfigMultiple(urlDev, urlProd),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckSendgridEventWebhookExists("sendgrid_event_webhook.dev"),
+					testAccCheckSendgridEventWebhookExists("sendgrid_event_webhook.prod"),
+					resource.TestCheckResourceAttr("sendgrid_event_webhook.dev", "url", urlDev),
+					resource.TestCheckResourceAttr("sendgrid_event_webhook.prod", "url", urlProd),
+					resource.TestCheckResourceAttr("sendgrid_event_webhook.dev", "friendly_name", "Development Webhook"),
+					resource.TestCheckResourceAttr("sendgrid_event_webhook.prod", "friendly_name", "Production Webhook"),
+					resource.TestCheckResourceAttrSet("sendgrid_event_webhook.dev", "id"),
+					resource.TestCheckResourceAttrSet("sendgrid_event_webhook.prod", "id"),
+					// Verify IDs are different
+					testAccCheckSendgridEventWebhookIDsDifferent("sendgrid_event_webhook.dev", "sendgrid_event_webhook.prod"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckSendgridEventWebhookDestroy(s *terraform.State) error {
 	c := testAccProvider.Meta().(*sendgrid.Client)
 
@@ -159,9 +195,9 @@ func testAccCheckSendgridEventWebhookDestroy(s *terraform.State) error {
 		}
 
 		ctx := context.Background()
-		_, err := c.ReadEventWebhook(ctx)
+		_, err := c.ReadEventWebhook(ctx, rs.Primary.ID)
 		if err.StatusCode != 404 && err.Err == nil {
-			return fmt.Errorf("event webhook still exists")
+			return fmt.Errorf("event webhook %s still exists", rs.Primary.ID)
 		}
 	}
 
@@ -212,13 +248,40 @@ resource "sendgrid_event_webhook" "friendly" {
 	url           = "%s"
 	enabled       = true
 	friendly_name = "%s"
-	
+
 	bounce      = true
 	delivered   = true
 	open        = true
 	click       = true
 }
 `, url, friendlyName)
+}
+
+func testAccCheckSendgridEventWebhookConfigMultiple(urlDev, urlProd string) string {
+	return fmt.Sprintf(`
+resource "sendgrid_event_webhook" "dev" {
+	url           = "%s"
+	enabled       = true
+	friendly_name = "Development Webhook"
+
+	bounce      = true
+	delivered   = true
+	open        = true
+	click       = true
+}
+
+resource "sendgrid_event_webhook" "prod" {
+	url           = "%s"
+	enabled       = true
+	friendly_name = "Production Webhook"
+
+	bounce      = true
+	delivered   = true
+	open        = true
+	click       = true
+	spam_report = true
+}
+`, urlDev, urlProd)
 }
 
 func testAccCheckSendgridEventWebhookExists(n string) resource.TestCheckFunc {
@@ -236,9 +299,29 @@ func testAccCheckSendgridEventWebhookExists(n string) resource.TestCheckFunc {
 		c := testAccProvider.Meta().(*sendgrid.Client)
 		ctx := context.Background()
 
-		_, err := c.ReadEventWebhook(ctx)
+		_, err := c.ReadEventWebhook(ctx, rs.Primary.ID)
 		if err.Err != nil {
-			return fmt.Errorf("event webhook not found")
+			return fmt.Errorf("event webhook not found: %v", err.Err)
+		}
+
+		return nil
+	}
+}
+
+func testAccCheckSendgridEventWebhookIDsDifferent(name1, name2 string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		rs1, ok := s.RootModule().Resources[name1]
+		if !ok {
+			return fmt.Errorf("Not found: %s", name1)
+		}
+
+		rs2, ok := s.RootModule().Resources[name2]
+		if !ok {
+			return fmt.Errorf("Not found: %s", name2)
+		}
+
+		if rs1.Primary.ID == rs2.Primary.ID {
+			return fmt.Errorf("Expected different IDs for %s and %s, but both have ID %s", name1, name2, rs1.Primary.ID)
 		}
 
 		return nil
