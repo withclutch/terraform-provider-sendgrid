@@ -12,11 +12,11 @@ type EventWebhook struct { //nolint:maligned
 	ID                string `json:"id,omitempty"`
 	Enabled           bool   `json:"enabled"`
 	URL               string `json:"url,omitempty"`
-	FriendlyName      string `json:"friendly_name,omitempty"`       //nolint:tagliatelle
-	GroupResubscribe  bool   `json:"group_resubscribe"`             //nolint:tagliatelle
+	FriendlyName      string `json:"friendly_name,omitempty"` //nolint:tagliatelle
+	GroupResubscribe  bool   `json:"group_resubscribe"`       //nolint:tagliatelle
 	Delivered         bool   `json:"delivered"`
-	GroupUnsubscribe  bool   `json:"group_unsubscribe"`             //nolint:tagliatelle
-	SpamReport        bool   `json:"spam_report"`                   //nolint:tagliatelle
+	GroupUnsubscribe  bool   `json:"group_unsubscribe"` //nolint:tagliatelle
+	SpamReport        bool   `json:"spam_report"`       //nolint:tagliatelle
 	Bounce            bool   `json:"bounce"`
 	Deferred          bool   `json:"deferred"`
 	Unsubscribe       bool   `json:"unsubscribe"`
@@ -243,10 +243,15 @@ func (c *Client) ReadEventWebhookSigning(ctx context.Context, id string) (*Event
 		endpoint = "/user/webhooks/event/settings/" + id + "/signed"
 	}
 
-	respBody, _, err := c.Get(ctx, "GET", endpoint)
+	respBody, statusCode, err := c.Get(ctx, "GET", endpoint)
+
+	if statusCode == http.StatusNotFound {
+		return &EventWebhookSigning{Enabled: false, PublicKey: ""}, RequestError{StatusCode: http.StatusOK, Err: nil}
+	}
+
 	if err != nil {
 		return nil, RequestError{
-			StatusCode: http.StatusInternalServerError,
+			StatusCode: statusCode,
 			Err:        err,
 		}
 	}
