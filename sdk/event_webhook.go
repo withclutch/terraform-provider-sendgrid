@@ -104,6 +104,7 @@ func (c *Client) CreateEventWebhook(ctx context.Context, webhook EventWebhook) (
 }
 
 // ReadEventWebhook retrieves a specific event webhook by ID.
+// SendGrid doesn't have a single-webhook GET endpoint, so we fetch all and filter.
 func (c *Client) ReadEventWebhook(ctx context.Context, id string) (*EventWebhook, RequestError) {
 	if id == "" {
 		return nil, RequestError{
@@ -112,22 +113,21 @@ func (c *Client) ReadEventWebhook(ctx context.Context, id string) (*EventWebhook
 		}
 	}
 
-	respBody, statusCode, err := c.Get(ctx, "GET", "/user/webhooks/event/settings/"+id)
-	if err != nil {
-		return nil, RequestError{
-			StatusCode: statusCode,
-			Err:        fmt.Errorf("failed reading event webhook: %w", err),
+	webhooks, _, reqErr := c.ListEventWebhooks(ctx)
+	if reqErr.Err != nil {
+		return nil, reqErr
+	}
+
+	for i := range webhooks {
+		if webhooks[i].ID == id {
+			return &webhooks[i], RequestError{StatusCode: http.StatusOK, Err: nil}
 		}
 	}
 
-	if statusCode == http.StatusNotFound {
-		return nil, RequestError{
-			StatusCode: statusCode,
-			Err:        fmt.Errorf("event webhook not found: %s", id),
-		}
+	return nil, RequestError{
+		StatusCode: http.StatusNotFound,
+		Err:        fmt.Errorf("event webhook not found: %s", id),
 	}
-
-	return parseEventWebhook(respBody)
 }
 
 // UpdateEventWebhook updates an existing event webhook by ID.
