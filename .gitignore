@@ -66,3 +66,7 @@ Thumbs.db
 *.key
 .env
 .env.local
+
+todos/
+plans/
+docs/solutions/
